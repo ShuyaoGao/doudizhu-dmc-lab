@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+message: "如果在教学或研究中使用了本项目，请按以下信息引用。If you use this project, please cite it as below."
+title: "doudizhu-dmc-lab: 斗地主 DMC 实验台 (DouDizhu Deep Monte Carlo brain lab)"
+type: software
+authors:
+  - family-names: Gao
+    given-names: Shuyao
+    email: "gaoshuyao.mk@gmail.com"
+    affiliation: "aSSIST University (Seoul School of Integrated Sciences and Technologies)"
+version: "1.0"
+date-released: "2026-10-14"
+license: MIT
+repository-code: "https://github.com/ShuyaoGao/doudizhu-dmc-lab"
+url: "https://ShuyaoGao.github.io/doudizhu-dmc-lab/play/"
+abstract: >-
+  A browser-only teaching demo (AI Teaching Demos): three small Q-networks, trained with
+  Deep Monte Carlo self-play in the spirit of DouZero, play DouDizhu while a live "brain panel"
+  shows the real activations, attributions and Q values of every legal move, computed in
+  JavaScript from the exported weights. Includes watch / play / practice modes, neuron
+  knock-out, and the full PyTorch training and evaluation code.
+keywords:
+  - course-demo
+  - reinforcement-learning
+  - doudizhu
+  - deep-monte-carlo
+references:
+  - type: article
+    title: "DouZero: Mastering DouDizhu with Self-Play Deep Reinforcement Learning"
+    authors:
+      - family-names: Zha
+        given-names: Daochen
+      - family-names: Xie
+        given-names: Jingru
+      - family-names: Ma
+        given-names: Wenye
+      - family-names: Zhang
+        given-names: Sheng
+      - family-names: Lian
+        given-names: Xiangru
+      - family-names: Hu
+        given-names: Xia
+      - family-names: Liu
+        given-names: Ji
+    year: 2021
+    conference:
+      name: "International Conference on Machine Learning (ICML)"
+    url: "https://arxiv.org/abs/2106.06135"

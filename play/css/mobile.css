@@ -1,0 +1,147 @@
+/* ============================================================================
+   手机竖屏（触屏 + 宽度 ≤ 980px + 竖屏 → body.touchp，由 js/mobile.js 加；触屏横屏 → body.touchl）
+   牌类通用布局，可整份复制到别的牌类项目。用到的类名 / id：
+     body.touch / .touchp / .touchl        设备分类（mobile.js detect）
+     body.m-watch / .m-play / .m-practice  当前模式（页面在切换模式时加）
+     body.sheet-brain / .sheet-ctrl        全屏面板打开（mobile.js sheets）；#brain-close 是共用的「返回」按钮
+     body.rot-ok                           横屏下选择了「仍然横屏继续」
+     #menu-btn #menu                       ☰ 菜单（头部压成一行后其余入口都收在这里）
+     #mob-bar .mbtn .mob-watch .mob-play   主画面下方的一行按钮（看大脑 / 选项 / 暂停 / 单步）
+     .hand .card .cbtn                     横向滚动的手牌列、牌面、出牌 / 不出 / 提示 大按钮
+     .touch-only / .kbd-only               说明浮层里只给触屏 / 只给键盘看的内容
+   观战（看）：整页上下滚动，牌桌贴顶，大脑面板紧跟在牌桌下面（紧凑画法），再往下是选项。
+   我来玩 / 练习（操作）：一屏 100dvh 不滚动，上方牌桌 + 下方手牌与大按钮；大脑、选项收起，用「看大脑」「选项」全屏打开。
+   ============================================================================ */
+#menu-btn, #menu, #mob-bar, #brain-close, #rotate-hint, .touch-only { display: none; }
+.pressed { filter: brightness(1.25); transform: scale(.97); }
+@media (hover: none) { .hand.clickable .card:hover { transform: none; } .hand.clickable .card.sel:hover { transform: translateY(-14px); } }
+
+body.touch .touch-only { display: block; }
+body.touch .kbd-only { display: none; }
+
+body.touchp { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: manipulation;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left); }
+body.touchp #tip { display: none !important; }
+
+/* ---- 头部压成一行：标题、模式标签、☰ ---- */
+body.touchp #topbar { gap: 6px; padding: 4px 8px; min-height: 44px; }
+body.touchp .brand { font-size: 15px; letter-spacing: 0; }
+body.touchp .brand .long, body.touchp .brand .sub, body.touchp #big-wrap, body.touchp #help-btn, body.touchp #exit-btn { display: none; }
+body.touchp #modes { padding: 2px; gap: 2px; }
+body.touchp .mode { padding: 7px 9px; font-size: 13px; min-height: 36px; }
+body.touchp #menu-btn { display: block; margin-left: auto; width: 44px; height: 38px; font-size: 20px; border-radius: 8px; background: #223429; }
+body.touchp #menu:not([hidden]) { display: grid; position: fixed; z-index: 90; right: 8px; top: calc(env(safe-area-inset-top) + 48px); min-width: 200px;
+  background: var(--panel); border: 1px solid var(--accent); border-radius: 12px; padding: 6px; gap: 2px; box-shadow: 0 8px 24px rgba(0,0,0,.55); }
+#menu button { font-size: 15px; text-align: left; padding: 10px 14px; min-height: 44px; border-radius: 8px; color: var(--text); }
+#menu button:active { background: #2a4034; }
+#menu .sep { height: 1px; background: var(--line); margin: 4px 0; }
+
+/* ---- 牌桌、牌面（360px 宽也要看得清、点得到） ---- */
+body.touchp #table { border-radius: 14px; padding: 8px 8px 8px; min-height: 0; border-width: 1.5px; }
+body.touchp .seat-row { min-height: 0; gap: 4px; flex-wrap: wrap; align-content: flex-start; }
+body.touchp .seat { width: 48%; gap: 4px; }
+body.touchp #center-info { flex: 1 1 100%; order: 3; padding-top: 6px; }   /* 底牌 / 倍数 / 要压 这一行放到两家下面，横着写 */
+body.touchp .badge { min-width: 0; padding: 4px 8px; gap: 1px; }
+body.touchp .badge .nm { font-size: 12px; } body.touchp .badge .role { font-size: 11px; } body.touchp .badge .cnt { font-size: 11px; } body.touchp .badge .cnt b { font-size: 15px; }
+body.touchp #center-info { font-size: 12px; line-height: 1.5; padding-top: 2px; }
+body.touchp #center-info .box { padding: 4px 8px; }
+body.touchp .front { min-height: 36px; }
+body.touchp .card.sm { width: 24px; height: 34px; }
+body.touchp .front .card.sm { margin-left: -5px; }
+body.touchp #me-zone { padding: 6px 6px 8px; margin-top: 4px; }
+body.touchp #status-line { font-size: 13px; }
+body.touchp .card { width: 46px; height: 66px; border-radius: 7px; }
+body.touchp .card .rk { font-size: 19px; } body.touchp .card .st { font-size: 14px; }
+body.touchp .card.joker { font-size: 13px; }
+body.touchp .hand { justify-content: flex-start; justify-content: safe center; overflow-x: auto; overflow-y: hidden; padding: 16px 10px 6px; min-height: 92px;
+  touch-action: pan-x; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+body.touchp .hand .card { margin-left: -12px; flex: none; }
+body.touchp .hand .card:first-child { margin-left: 0; }
+body.touchp .hand .card.sel { transform: translateY(-14px); }
+body.touchp #me-actions { gap: 8px; margin-top: 8px; min-height: 48px; }
+body.touchp #me-actions .btn { flex: 1 1 0; min-width: 64px; min-height: 48px; font-size: 16px; border-radius: 10px; padding: 6px 8px; touch-action: none; }
+body.touchp #me-actions .btn.go, body.touchp #me-actions .btn.primary { font-weight: bold; }
+body.touchp #me-badge { display: none; }
+body.touchp #result-banner { min-width: 0; width: 88%; padding: 12px 14px; }
+body.touchp #result-banner .btn { min-height: 44px; min-width: 120px; }
+
+/* ---- 主画面下方的一行按钮 ---- */
+body.touchp #mob-bar { display: flex; align-items: center; gap: 6px; padding: 0 2px; min-height: 46px; flex: none; }
+.mbtn { min-height: 44px; min-width: 64px; padding: 0 12px; border-radius: 10px; background: #2a4034; font-size: 14px; white-space: nowrap; }
+.mbtn.primary { background: var(--accent); color: #3a2a00; font-weight: bold; }
+.mbtn:disabled { opacity: .4; }
+#mob-explain { flex: 1; min-width: 0; font-size: 12px; line-height: 1.4; color: var(--muted); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+#mob-explain b { color: var(--accent); }
+body.m-watch .mob-play, body:not(.m-watch) .mob-watch { display: none; }
+
+/* ---- 观战：整页上下滚动，牌桌 → 大脑（紧凑） → 选项 ---- */
+body.touchp.m-watch { height: auto; min-height: 100%; overflow-y: auto; overflow-x: hidden; }
+body.touchp.m-watch #app { height: auto; min-height: 100dvh; }
+body.touchp.m-watch #layout { display: flex; flex-direction: column; gap: 8px; padding: 6px 8px; overflow: visible; }
+body.touchp.m-watch #left { display: contents; }
+body.touchp.m-watch #table { order: 0; min-height: 290px; }
+body.touchp.m-watch #mob-bar { order: 1; }
+body.touchp.m-watch #right { order: 2; overflow: visible; padding: 8px; }
+body.touchp.m-watch #controls { order: 3; }
+body.touchp.m-watch #footer { font-size: 10.5px; padding-bottom: max(6px, env(safe-area-inset-bottom)); }
+
+/* ---- 我来玩 / 练习：一屏，不滚动 ---- */
+body.touchp:not(.m-watch) { height: 100dvh; overflow: hidden; }
+body.touchp:not(.m-watch) #app { height: 100dvh; }
+body.touchp:not(.m-watch) #layout { display: flex; flex-direction: column; gap: 4px; padding: 4px 6px 0; overflow: hidden; }
+body.touchp:not(.m-watch) #left { flex: 1; min-height: 0; overflow: hidden; gap: 4px; padding: 0; }
+body.touchp:not(.m-watch) #table { flex: 1; min-height: 0; }
+body.touchp:not(.m-watch) #me-zone { margin-top: auto; }
+body.touchp:not(.m-watch) #mob-bar { padding-bottom: max(4px, env(safe-area-inset-bottom)); }
+body.touchp:not(.m-watch) #controls, body.touchp:not(.m-watch) #right, body.touchp:not(.m-watch) #footer { display: none; }
+
+/* ---- 全屏面板：「看大脑」「选项」，「返回」关闭 ---- */
+body.touchp.sheet-brain #right, body.touchp.sheet-ctrl #controls { display: flex; flex-direction: column; position: fixed; z-index: 85; inset: 0; overflow-y: auto; overflow-x: hidden;
+  background: var(--bg); border: none; border-radius: 0; padding: calc(env(safe-area-inset-top) + 8px) 10px calc(env(safe-area-inset-bottom) + 76px); }
+body.touchp.sheet-brain #brain-close, body.touchp.sheet-ctrl #brain-close { display: block; position: fixed; z-index: 86; left: 50%; transform: translateX(-50%);
+  bottom: calc(env(safe-area-inset-bottom) + 12px); min-width: 150px; min-height: 48px; padding: 0 26px; background: var(--accent); color: #3a2a00;
+  font-weight: bold; font-size: 16px; border-radius: 24px; box-shadow: 0 6px 18px rgba(0,0,0,.55); }
+body.touchp.sheet-brain #brain-body { flex: none; }
+
+/* ---- 大脑面板的紧凑画法（brain.js 在宽度 < 600px 时用更少的神经元列和更小的字） ---- */
+body.touchp #brain-top { gap: 6px; }
+body.touchp .btab { padding: 7px 8px; font-size: 12px; min-height: 36px; }
+body.touchp #brain-struct { font-size: 11.5px; }
+body.touchp #dec-nav .icon-btn { width: 32px; height: 32px; font-size: 12px; }
+body.touchp #restore-btn { min-height: 32px; }
+body.touchp .brain-head { font-size: 12px; gap: 6px; }
+body.touchp .legend { font-size: 10.5px; }
+body.touchp .orow { grid-template-columns: 18px minmax(70px, 1.2fr) 1fr 48px; min-height: 32px; font-size: 12px; }
+body.touchp .valuebox { min-width: 0; flex: 1 1 100%; }
+body.touchp .preview-cover .btn { min-height: 44px; }
+body.touchp .lock { padding: 12px; } body.touchp .lock .inner { font-size: 12.5px; line-height: 1.6; }
+
+/* ---- 选项 / 表单：触控区 ≥ 44px，标签 ≥ 14px ---- */
+body.touchp #controls .btn, body.touchp .preset { min-height: 44px; padding: 8px 14px; font-size: 14px; }
+body.touchp #controls .btn.small { min-height: 40px; font-size: 13px; }
+body.touchp #speed { width: 100%; min-height: 44px; }
+body.touchp select { min-height: 40px; font-size: 14px; }
+body.touchp .switch { min-height: 44px; font-size: 14px; }
+body.touchp .switch input { width: 20px; height: 20px; }
+body.touchp .two-col { grid-template-columns: 1fr; }
+body.touchp #tasks { font-size: 14px; }
+body.touchp #types .btn { min-height: 40px; font-size: 13px; }
+body.touchp #explain, body.touchp .panel-h { font-size: 14px; }
+
+/* ---- 横屏手机：提示竖屏体验更佳 ---- */
+body.touchl:not(.m-watch):not(.rot-ok) #rotate-hint { display: grid; position: fixed; inset: 0; z-index: 95; place-items: center; text-align: center;
+  background: rgba(10,20,14,.96); padding: 16px; line-height: 1.8; }
+#rotate-hint b { font-size: 20px; display: block; margin-bottom: 6px; color: var(--accent); }
+#rotate-hint button { margin-top: 12px; padding: 10px 20px; min-height: 44px; border: 1px solid var(--line); border-radius: 10px; font-size: 15px; }
+
+/* ---- 说明浮层：触屏下显示触屏图解，可上下滚动，「开始」固定在底部 ---- */
+:is(body.touchp, body.touchl) .modal { padding: 8px; align-items: stretch; }
+:is(body.touchp, body.touchl) .modal-card { display: flex; flex-direction: column; max-height: none; height: 100%; padding: 14px 12px calc(env(safe-area-inset-bottom) + 10px); overflow: hidden; }
+:is(body.touchp, body.touchl) .modal-card h2 { font-size: 17px; margin-right: 30px; }
+:is(body.touchp, body.touchl) .modal-card .close { width: 44px; height: 44px; right: 4px; top: 4px; }
+:is(body.touchp, body.touchl) .modal-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+:is(body.touchp, body.touchl) .modal-foot { flex: none; margin-top: 10px; }
+:is(body.touchp, body.touchl) .modal-foot .btn { min-height: 48px; min-width: 160px; font-size: 16px; }
+body.touchp .help-grid { grid-template-columns: 1fr; gap: 8px; }
+body.touchp .help-card { font-size: 13px; line-height: 1.65; }
+.touch-only svg { width: 100%; max-width: 360px; height: auto; display: block; margin: 4px auto 6px; }

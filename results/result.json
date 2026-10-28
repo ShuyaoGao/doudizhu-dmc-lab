@@ -1,0 +1,106 @@
+{
+  "format": "doudizhu-dmc-lab/result/1",
+  "model": {
+    "checkpoint": "checkpoints/dmc_latest.pt",
+    "arch": "588 -> 512 -> 256 -> 128 -> 1 (ReLU MLP), 3 nets (landlord/down/up)",
+    "params_per_net": 465921,
+    "params_total": 1397763,
+    "training_steps": null,
+    "training_time": null,
+    "training_note": "训练步数和用时未记录；重新训练命令见 README"
+  },
+  "eval": {
+    "script": "evaluate.py (play_match) via tools/run_eval.py",
+    "games_per_matchup": 200,
+    "seed": 2026,
+    "bidding": "heuristic_bid（叫分制定地主）",
+    "matchups": {
+      "random_vs_random": {
+        "landlord": "随机",
+        "peasants": "随机",
+        "games": 200,
+        "landlord_win_rate": 0.355,
+        "landlord_avg_score": -2.06
+      },
+      "greedy_vs_random": {
+        "landlord": "贪心",
+        "peasants": "随机",
+        "games": 200,
+        "landlord_win_rate": 0.92,
+        "landlord_avg_score": 5.66
+      },
+      "random_vs_greedy": {
+        "landlord": "随机",
+        "peasants": "贪心",
+        "games": 200,
+        "landlord_win_rate": 0.055,
+        "landlord_avg_score": -6.13
+      },
+      "greedy_vs_greedy": {
+        "landlord": "贪心",
+        "peasants": "贪心",
+        "games": 200,
+        "landlord_win_rate": 0.57,
+        "landlord_avg_score": 0.99
+      },
+      "dmc_vs_random": {
+        "landlord": "DMC",
+        "peasants": "随机",
+        "games": 200,
+        "landlord_win_rate": 0.975,
+        "landlord_avg_score": 5.68
+      },
+      "random_vs_dmc": {
+        "landlord": "随机",
+        "peasants": "DMC",
+        "games": 200,
+        "landlord_win_rate": 0.055,
+        "landlord_avg_score": -6.4
+      },
+      "dmc_vs_greedy": {
+        "landlord": "DMC",
+        "peasants": "贪心",
+        "games": 200,
+        "landlord_win_rate": 0.685,
+        "landlord_avg_score": 2.8
+      },
+      "greedy_vs_dmc": {
+        "landlord": "贪心",
+        "peasants": "DMC",
+        "games": 200,
+        "landlord_win_rate": 0.52,
+        "landlord_avg_score": -0.13
+      },
+      "dmc_vs_dmc": {
+        "landlord": "DMC",
+        "peasants": "DMC",
+        "games": 200,
+        "landlord_win_rate": 0.705,
+        "landlord_avg_score": 3.23
+      }
+    }
+  },
+  "rl_vs_rl": {
+    "games": 500,
+    "seed": 777,
+    "landlord_win_rate": 0.714,
+    "bid_counts": {
+      "1": 2,
+      "2": 270,
+      "3": 228
+    },
+    "bombs_per_game": 0.298,
+    "spring_games": 5,
+    "avg_multiplier": 1.354,
+    "landlord_avg_score": 2.904,
+    "avg_steps_incl_pass": 37.49,
+    "script": "stats_rl_vs_rl.py 同一套统计循环 via tools/run_eval.py"
+  },
+  "env": {
+    "python": "3.11.9",
+    "torch": "2.13.0+cpu",
+    "numpy": "2.4.6",
+    "platform": "Windows"
+  },
+  "elapsed_seconds": 16.5
+}

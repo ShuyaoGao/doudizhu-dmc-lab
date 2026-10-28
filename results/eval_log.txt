@@ -1,0 +1,28 @@
+python -m tools.run_eval --games 200 --seed 2026 --rl-games 500 --rl-seed 777
+地主/农民/地主胜率/地主平均得分
+随机    随机       35.5%     -2.06
+贪心    随机       92.0%      5.66
+随机    贪心        5.5%     -6.13
+贪心    贪心       57.0%      0.99
+DMC   随机       97.5%      5.68
+随机    DMC       5.5%     -6.40
+DMC   贪心       68.5%      2.80
+贪心    DMC      52.0%     -0.13
+DMC   DMC      70.5%      3.23
+
+RL vs RL
+{
+  "games": 500,
+  "seed": 777,
+  "landlord_win_rate": 0.714,
+  "bid_counts": {
+    "1": 2,
+    "2": 270,
+    "3": 228
+  },
+  "bombs_per_game": 0.298,
+  "spring_games": 5,
+  "avg_multiplier": 1.354,
+  "landlord_avg_score": 2.904,
+  "avg_steps_incl_pass": 37.49
+}
